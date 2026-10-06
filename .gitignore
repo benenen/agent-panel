@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+.vs/
+.idea/
+.deps/
+native/out/
+*.db
+*.db-shm
+*.db-wal

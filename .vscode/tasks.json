@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {"label":"build native terminal","type":"shell","command":"bash scripts/build-native.sh","problemMatcher":[]},
+    {"label":"build","type":"process","command":"dotnet","args":["build","AgentPanel.slnx"],"problemMatcher":"$msCompile","group":{"kind":"build","isDefault":true}},
+    {"label":"smoke tests","type":"process","command":"dotnet","args":["run","--project","tests/AgentPanel.Smoke","--","--ui"],"problemMatcher":[]}
+  ]
+}

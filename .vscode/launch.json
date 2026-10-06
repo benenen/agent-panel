@@ -1,0 +1,6 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {"name":"Agent Panel","type":"coreclr","request":"launch","preLaunchTask":"build","program":"${workspaceFolder}/src/AgentPanel/bin/Debug/net10.0/AgentPanel.dll","cwd":"${workspaceFolder}","console":"internalConsole"}
+  ]
+}

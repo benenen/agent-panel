@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AgentPanel.Core/AgentPanel.Core.csproj" />
+    <Project Path="src/AgentPanel.Storage/AgentPanel.Storage.csproj" />
+    <Project Path="src/AgentPanel.Terminal/AgentPanel.Terminal.csproj" />
+    <Project Path="src/AgentPanel.Workspace/AgentPanel.Workspace.csproj" />
+    <Project Path="src/AgentPanel/AgentPanel.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AgentPanel.Smoke/AgentPanel.Smoke.csproj" />
+  </Folder>
+</Solution>
