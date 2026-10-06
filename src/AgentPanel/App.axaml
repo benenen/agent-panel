@@ -1,11 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="AgentPanel.App" RequestedThemeVariant="Dark">
   <Application.Styles>
     <FluentTheme />
-    <Style Selector="Window"><Setter Property="FontFamily" Value="Inter" /><Setter Property="FontSize" Value="13" /></Style>
-    <Style Selector="Button"><Setter Property="CornerRadius" Value="5" /><Setter Property="Padding" Value="12,7" /></Style>
-    <Style Selector="TextBlock.muted"><Setter Property="Foreground" Value="#8391A9" /></Style>
-    <Style Selector="TextBox.code"><Setter Property="FontFamily" Value="DejaVu Sans Mono" /><Setter Property="FontSize" Value="12" /></Style>
-    <Style Selector="TabItem"><Setter Property="FontSize" Value="14" /></Style>
-    <Style Selector="ListBox"><Setter Property="Background" Value="#141923" /></Style>
+    <StyleInclude Source="avares://AgentPanel/Styles/Workbench.axaml" />
   </Application.Styles>
 </Application>

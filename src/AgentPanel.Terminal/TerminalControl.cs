@@ -29,7 +29,7 @@ public sealed class TerminalControl : Control
     public override void Render(DrawingContext context)
     {
         base.Render(context);
-        context.FillRectangle(Brush.Parse("#141923"), new Rect(Bounds.Size));
+        context.FillRectangle(Brush.Parse("#18181B"), new Rect(Bounds.Size));
         if (Session is null)
         {
             context.DrawText(Text("选择一个会话，点击「启动 / 重启」进入终端。", 0xff7f8ca5), new Point(24, 30));
@@ -41,7 +41,7 @@ public sealed class TerminalControl : Control
             var cell = snapshot.Cells[i];
             var x = Padding + i % Session.Columns * CellWidth;
             var y = Padding + i / Session.Columns * CellHeight;
-            if (cell.Background != 0xff141923)
+            if (cell.Background != 0xff18181b)
                 context.FillRectangle(new SolidColorBrush(Color.FromUInt32(cell.Background)), new Rect(x, y, CellWidth, CellHeight));
             var text = cell.GetText();
             if (text.Length > 0 && (cell.Flags & 8) == 0)
@@ -50,7 +50,7 @@ public sealed class TerminalControl : Control
                 context.DrawLine(new Pen(new SolidColorBrush(Color.FromUInt32(cell.Foreground))), new Point(x, y + 17), new Point(x + CellWidth, y + 17));
         }
         if (snapshot.CursorX >= 0 && !Session.HasExited)
-            context.DrawRectangle(new Pen(Brush.Parse(IsFocused ? "#8bb8f6" : "#55637b")),
+            context.DrawRectangle(new Pen(Brush.Parse(IsFocused ? "#A1A1AA" : "#696970")),
                 new Rect(Padding + snapshot.CursorX * CellWidth, Padding + snapshot.CursorY * CellHeight, CellWidth, CellHeight));
     }
 

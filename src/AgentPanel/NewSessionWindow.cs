@@ -16,7 +16,7 @@ public sealed class NewSessionWindow : Window
         var path = new TextBox { Text = directory };
         var command = new TextBox { Text = "exec /bin/bash -i", PlaceholderText = "例如 codex、claude 或 exec /bin/bash -i" };
         var error = new TextBlock { Foreground = Brush.Parse("#E9A1A5"), TextWrapping = TextWrapping.Wrap };
-        var create = new Button { Content = "创建会话", HorizontalAlignment = HorizontalAlignment.Right };
+        var create = new Button { Classes = { "primary" }, Content = "创建会话", HorizontalAlignment = HorizontalAlignment.Right };
         create.Click += (_, _) =>
         {
             if (string.IsNullOrWhiteSpace(name.Text) || string.IsNullOrWhiteSpace(command.Text) || !Directory.Exists(path.Text))

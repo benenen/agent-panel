@@ -1,65 +1,135 @@
 <Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:core="using:AgentPanel.Core" xmlns:workspace="using:AgentPanel.Workspace"
-        xmlns:terminal="using:AgentPanel.Terminal" x:Class="AgentPanel.MainWindow"
-        Title="Agent Panel" Width="1440" Height="900" MinWidth="1000" MinHeight="600" Background="#141923">
-  <Grid RowDefinitions="52,*,30">
-    <Border Background="#1C2433" BorderBrush="#303C51" BorderThickness="0,0,0,1" Padding="18,0">
-      <Grid ColumnDefinitions="Auto,*,Auto">
-        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-          <Border Background="#729CDD" CornerRadius="4" Padding="7,3"><TextBlock Text="AP" Foreground="#121926" FontWeight="Bold" /></Border>
-          <TextBlock Text="Agent Panel" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
-        </StackPanel>
-        <TextBlock Grid.Column="1" Name="WorkspaceTitle" Classes="muted" Margin="24,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-        <Button Grid.Column="2" Content="刷新文件与 Git" Click="RefreshClicked" VerticalAlignment="Center" />
-      </Grid>
-    </Border>
-    <Grid Grid.Row="1" ColumnDefinitions="230,4,*,4,440">
-      <Border Background="#192130" Padding="12">
-        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="12">
-          <Grid ColumnDefinitions="*,Auto"><TextBlock Text="AGENTS" Classes="muted" FontWeight="SemiBold" VerticalAlignment="Center" /><Button Grid.Column="1" Content="＋ 新建" Click="NewSessionClicked" /></Grid>
-          <TextBlock Grid.Row="1" Classes="muted" FontSize="11" Text="每个会话拥有独立终端" />
-          <ListBox Grid.Row="2" Name="SessionList" Background="Transparent" SelectionChanged="SessionSelected">
-            <ListBox.ItemTemplate><DataTemplate DataType="core:AgentSession">
-              <StackPanel Margin="0,6" Spacing="4"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" /><TextBlock Text="{Binding Command}" Classes="muted" FontSize="11" TextTrimming="CharacterEllipsis" /></StackPanel>
-            </DataTemplate></ListBox.ItemTemplate>
-          </ListBox>
-          <Button Grid.Row="3" Content="删除选中会话" Click="DeleteSessionClicked" HorizontalAlignment="Stretch" />
+        xmlns:local="using:AgentPanel" xmlns:workspace="using:AgentPanel.Workspace" xmlns:terminal="using:AgentPanel.Terminal"
+        x:Class="AgentPanel.MainWindow" Title="Agent Panel" Width="1440" Height="860" MinWidth="980" MinHeight="600">
+  <Window.Resources><local:EntryIconConverter x:Key="EntryIcon" /></Window.Resources>
+  <Grid RowDefinitions="*,24">
+    <Grid Name="Workbench" ColumnDefinitions="244,5,*,5,352">
+      <Border Background="{StaticResource RailBrush}">
+        <Grid RowDefinitions="42,42,44,*,40">
+          <Grid ColumnDefinitions="Auto,*,Auto" Margin="14,0,9,0">
+            <Path Classes="icon" Data="{StaticResource MachineIcon}" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="本地工作区" Margin="9,0" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <Button Grid.Column="2" Classes="icon" Click="NewSessionClicked" ToolTip.Tip="新建会话" AutomationProperties.Name="新建会话"><Path Classes="icon" Data="{StaticResource PlusIcon}" /></Button>
+          </Grid>
+          <Grid Grid.Row="1" Margin="10,2,10,8">
+            <TextBox Name="SessionSearch" Classes="search" PlaceholderText="搜索会话…" TextChanged="SearchChanged" AutomationProperties.Name="搜索会话" />
+            <Path Classes="icon" Data="{StaticResource SearchIcon}" Width="13" Height="13" HorizontalAlignment="Left" Margin="11,0" VerticalAlignment="Center" IsHitTestVisible="False" />
+          </Grid>
+          <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="18,0,16,0">
+            <TextBlock Name="RepositoryName" Text="工作区" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+              <Path Classes="icon" Data="{StaticResource BranchIcon}" Width="11" Height="11" />
+              <TextBlock Name="SidebarBranch" Text="—" Classes="muted mono" MaxWidth="100" TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+          </Grid>
+          <Grid Grid.Row="3" Margin="9,0">
+            <ListBox Name="SessionList" SelectionChanged="SessionSelected" AutomationProperties.Name="Agent 会话">
+              <ListBox.ItemTemplate><DataTemplate DataType="local:SessionRow">
+                <Grid ColumnDefinitions="28,*" ColumnSpacing="9" ToolTip.Tip="{Binding Command}">
+                  <Grid Width="28" Height="28" VerticalAlignment="Center">
+                    <Border Background="{Binding AvatarBrush}" CornerRadius="14" Width="26" Height="26">
+                      <TextBlock Text="{Binding Avatar}" Foreground="#F1F1F3" FontFamily="DejaVu Sans Mono" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <Border Background="{Binding StateBrush}" BorderBrush="{StaticResource RailBrush}" BorderThickness="2" Width="9" Height="9" CornerRadius="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" ToolTip.Tip="{Binding State}" />
+                  </Grid>
+                  <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="Medium" TextTrimming="CharacterEllipsis" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                      <TextBlock Text="{Binding DirectoryName}" Classes="muted" FontSize="10" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Grid.Column="1" Text="{Binding State}" Classes="faint" FontSize="10" />
+                    </Grid>
+                  </StackPanel>
+                </Grid>
+              </DataTemplate></ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Name="NoMatches" Text="没有匹配的会话" Classes="muted" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,28" IsVisible="False" />
+          </Grid>
+          <Grid Grid.Row="4" ColumnDefinitions="*,Auto" Margin="17,0,9,0">
+            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center"><TextBlock Text="Agent Panel" Classes="faint" FontSize="10" /><TextBlock Name="SessionCount" Classes="faint" FontSize="10" /></StackPanel>
+            <Button Grid.Column="1" Classes="icon" Click="DeleteSessionClicked" ToolTip.Tip="删除当前会话" AutomationProperties.Name="删除当前会话"><Path Classes="icon" Data="{StaticResource TrashIcon}" Width="13" Height="13" /></Button>
+          </Grid>
         </Grid>
       </Border>
-      <GridSplitter Grid.Column="1" Background="#303C51" ResizeDirection="Columns" />
-      <Grid Grid.Column="2" RowDefinitions="46,*,28">
-        <Border Background="#1A2230" Padding="12,0" BorderBrush="#303C51" BorderThickness="0,0,0,1">
-          <Grid ColumnDefinitions="*,Auto"><TextBlock Name="TerminalTitle" Text="终端" VerticalAlignment="Center" /><Button Grid.Column="1" Name="StartSessionButton" Content="启动 / 重启" Click="StartSessionClicked" VerticalAlignment="Center" /></Grid>
+      <Grid Grid.Column="1"><Border Width="1" Background="{StaticResource LineBrush}" /><GridSplitter Background="Transparent" ResizeDirection="Columns" /></Grid>
+      <Grid Grid.Column="2" RowDefinitions="42,*" Background="{StaticResource CanvasBrush}">
+        <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="14,0,9,0">
+          <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+            <Path Classes="icon" Data="{StaticResource TerminalIcon}" Width="13" Height="13" VerticalAlignment="Center" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+              <TextBlock Name="TerminalTitle" Text="终端" FontWeight="SemiBold" />
+              <TextBlock Name="TerminalStatus" Text="未启动" Classes="faint" FontSize="10" VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+              <Button Name="StartSessionButton" Click="StartSessionClicked" Background="{StaticResource SurfaceBrush}" ToolTip.Tip="启动或重新启动当前会话">
+                <StackPanel Orientation="Horizontal" Spacing="6"><Path Classes="icon" Data="{StaticResource PlayIcon}" Width="10" Height="10" /><TextBlock Name="StartLabel" Text="启动" /></StackPanel>
+              </Button>
+              <Button Name="ToggleInspectorButton" Classes="icon" Click="ToggleInspectorClicked" ToolTip.Tip="显示 / 收起右侧面板 · Ctrl+Shift+J" AutomationProperties.Name="显示或收起文件和 Git 面板"><Path Classes="icon" Data="{StaticResource PanelIcon}" /></Button>
+            </StackPanel>
+          </Grid>
         </Border>
-        <terminal:TerminalControl Grid.Row="1" Name="Terminal" />
-        <TextBlock Grid.Row="2" Name="TerminalStatus" Classes="muted" Margin="12,0" FontSize="11" Text="Ctrl+Shift+V 粘贴 · 滚轮浏览历史" VerticalAlignment="Center" />
+        <Grid Grid.Row="1">
+          <terminal:TerminalControl Name="Terminal" />
+          <Border Name="TerminalEmpty" Background="{StaticResource CanvasBrush}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="320" Spacing="12">
+              <Path Classes="icon" Data="{StaticResource TerminalIcon}" Width="30" Height="30" Stroke="{StaticResource FaintBrush}" StrokeThickness="1.2" HorizontalAlignment="Center" Margin="0,0,0,8" />
+              <TextBlock Name="EmptyTitle" Text="启动终端" FontSize="17" FontWeight="Medium" HorizontalAlignment="Center" />
+              <TextBlock Name="EmptyCommand" Text="选择一个会话，开始工作" Classes="muted mono" TextWrapping="Wrap" TextAlignment="Center" />
+              <Button Name="EmptyStartButton" Classes="primary" Content="启动会话" Click="StartSessionClicked" HorizontalAlignment="Center" Margin="0,6,0,0" />
+              <TextBlock Name="WorkspaceTitle" Classes="faint mono" HorizontalAlignment="Center" MaxWidth="300" TextTrimming="CharacterEllipsis" Margin="0,4,0,0" />
+            </StackPanel>
+          </Border>
+        </Grid>
       </Grid>
-      <GridSplitter Grid.Column="3" Background="#303C51" ResizeDirection="Columns" />
-      <TabControl Grid.Column="4" Background="#192130" Padding="8">
-        <TabItem Header="文件">
-          <Grid RowDefinitions="Auto,200,4,*" RowSpacing="6" Margin="4,10">
-            <Grid ColumnDefinitions="Auto,*"><Button Content="↑" Click="ParentDirectoryClicked" /><TextBlock Grid.Column="1" Name="DirectoryLabel" Classes="muted" Margin="8,0" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" /></Grid>
-            <ListBox Grid.Row="1" Name="FileList" DoubleTapped="FileOpened"><ListBox.ItemTemplate><DataTemplate DataType="workspace:FileEntry"><TextBlock Text="{Binding Label}" FontFamily="DejaVu Sans Mono" FontSize="12" /></DataTemplate></ListBox.ItemTemplate></ListBox>
-            <GridSplitter Grid.Row="2" Background="#303C51" ResizeDirection="Rows" />
-            <TextBox Grid.Row="3" Name="FilePreview" Classes="code" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" PlaceholderText="双击文件查看内容，双击目录进入" />
-          </Grid>
-        </TabItem>
-        <TabItem Header="修改 / Diff">
-          <Grid RowDefinitions="Auto,160,4,*" RowSpacing="6" Margin="4,10">
-            <TextBlock Name="ChangesLabel" Classes="muted" />
-            <ListBox Grid.Row="1" Name="ChangeList" SelectionChanged="ChangeSelected"><ListBox.ItemTemplate><DataTemplate DataType="workspace:ChangedFile"><TextBlock Text="{Binding Label}" FontFamily="DejaVu Sans Mono" FontSize="12" /></DataTemplate></ListBox.ItemTemplate></ListBox>
-            <GridSplitter Grid.Row="2" Background="#303C51" ResizeDirection="Rows" />
-            <ScrollViewer Grid.Row="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"><StackPanel Name="DiffLines" /></ScrollViewer>
-          </Grid>
-        </TabItem>
-        <TabItem Header="Git graph">
-          <Grid RowDefinitions="Auto,*" RowSpacing="10" Margin="4,10">
-            <TextBlock Name="BranchLabel" Foreground="#95B7EB" FontWeight="SemiBold" />
-            <TextBox Grid.Row="1" Name="GraphText" Classes="code" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-          </Grid>
-        </TabItem>
-      </TabControl>
+      <Grid Grid.Column="3" Name="InspectorDivider"><Border Width="1" Background="{StaticResource LineBrush}" /><GridSplitter Background="Transparent" ResizeDirection="Columns" /></Grid>
+      <Grid Grid.Column="4" Name="Inspector">
+        <TabControl Name="InspectorTabs">
+          <TabItem Header="文件">
+            <Grid RowDefinitions="40,*,5,28,1.2*">
+              <Grid ColumnDefinitions="Auto,*" Margin="8,0,12,0" ColumnSpacing="5">
+                <Button Classes="icon" Click="ParentDirectoryClicked" ToolTip.Tip="上一级目录" AutomationProperties.Name="上一级目录"><Path Classes="icon" Data="{StaticResource ArrowUpIcon}" Width="12" Height="12" /></Button>
+                <TextBlock Grid.Column="1" Name="DirectoryLabel" Classes="muted mono" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+              </Grid>
+              <ListBox Grid.Row="1" Name="FileList" Classes="files" Margin="6,0" DoubleTapped="FileOpened" AutomationProperties.Name="文件列表">
+                <ListBox.ItemTemplate><DataTemplate DataType="workspace:FileEntry">
+                  <Grid ColumnDefinitions="16,*" ColumnSpacing="9" ToolTip.Tip="{Binding Name}">
+                    <Path Classes="icon" Data="{Binding IsDirectory, Converter={StaticResource EntryIcon}}" Width="13" Height="13" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                  </Grid>
+                </DataTemplate></ListBox.ItemTemplate>
+              </ListBox>
+              <Grid Grid.Row="2"><Border Height="1" Background="{StaticResource LineBrush}" /><GridSplitter Background="Transparent" ResizeDirection="Rows" /></Grid>
+              <TextBlock Grid.Row="3" Name="PreviewTitle" Text="文件预览" Classes="section" VerticalAlignment="Center" Margin="14,0" TextTrimming="CharacterEllipsis" />
+              <TextBox Grid.Row="4" Name="FilePreview" Classes="code" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" PlaceholderText="双击文件查看内容" />
+            </Grid>
+          </TabItem>
+          <TabItem Header="修改">
+            <Grid RowDefinitions="40,160,5,28,*">
+              <TextBlock Name="ChangesLabel" Classes="muted" Margin="14,0" VerticalAlignment="Center" />
+              <ListBox Grid.Row="1" Name="ChangeList" Classes="files" Margin="6,0" SelectionChanged="ChangeSelected" AutomationProperties.Name="修改文件">
+                <ListBox.ItemTemplate><DataTemplate DataType="workspace:ChangedFile">
+                  <Grid ColumnDefinitions="20,*" ColumnSpacing="6" ToolTip.Tip="{Binding Path}">
+                    <TextBlock Text="{Binding Status}" FontFamily="DejaVu Sans Mono" FontSize="11" Foreground="#C6A46B" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{Binding Path}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                  </Grid>
+                </DataTemplate></ListBox.ItemTemplate>
+              </ListBox>
+              <Grid Grid.Row="2"><Border Height="1" Background="{StaticResource LineBrush}" /><GridSplitter Background="Transparent" ResizeDirection="Rows" /></Grid>
+              <TextBlock Grid.Row="3" Name="DiffTitle" Text="DIFF" Classes="section" VerticalAlignment="Center" Margin="14,0" TextTrimming="CharacterEllipsis" />
+              <ScrollViewer Grid.Row="4" Background="{StaticResource CanvasBrush}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"><StackPanel Name="DiffLines" Margin="0,8" /></ScrollViewer>
+            </Grid>
+          </TabItem>
+          <TabItem Header="Git graph">
+            <Grid RowDefinitions="40,*">
+              <StackPanel Orientation="Horizontal" Spacing="8" Margin="14,0" VerticalAlignment="Center"><Path Classes="icon" Data="{StaticResource BranchIcon}" Width="12" Height="12" /><TextBlock Name="BranchLabel" /></StackPanel>
+              <TextBox Grid.Row="1" Name="GraphText" Classes="code" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+            </Grid>
+          </TabItem>
+        </TabControl>
+        <Button Classes="icon" Click="RefreshClicked" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,7,0" ToolTip.Tip="刷新文件与 Git" AutomationProperties.Name="刷新文件与 Git"><Path Classes="icon" Data="{StaticResource RefreshIcon}" Width="13" Height="13" /></Button>
+      </Grid>
     </Grid>
-    <Border Grid.Row="2" Background="#202B3D" Padding="12,0"><TextBlock Name="StatusText" Text="就绪" Classes="muted" FontSize="11" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" /></Border>
+    <Border Grid.Row="1" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Background="{StaticResource RailBrush}" Padding="14,0">
+      <Grid ColumnDefinitions="*,Auto"><TextBlock Name="StatusText" Text="就绪" Classes="faint" FontSize="10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" /><TextBlock Grid.Column="1" Text="Ctrl+Shift+V  粘贴" Classes="faint mono" FontSize="10" VerticalAlignment="Center" /></Grid>
+    </Border>
   </Grid>
 </Window>

@@ -1,0 +1,111 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <SolidColorBrush x:Key="CanvasBrush" Color="#18181B" />
+    <SolidColorBrush x:Key="RailBrush" Color="#202023" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#252528" />
+    <SolidColorBrush x:Key="LineBrush" Color="#343438" />
+    <SolidColorBrush x:Key="TextBrush" Color="#E4E4E7" />
+    <SolidColorBrush x:Key="MutedBrush" Color="#929299" />
+    <SolidColorBrush x:Key="FaintBrush" Color="#696970" />
+    <SolidColorBrush x:Key="HoverBrush" Color="#2C2C30" />
+    <SolidColorBrush x:Key="SelectionBrush" Color="#38383D" />
+    <SolidColorBrush x:Key="FocusBrush" Color="#A1A1AA" />
+    <SolidColorBrush x:Key="AddedBrush" Color="#90B89C" />
+    <SolidColorBrush x:Key="RemovedBrush" Color="#D29393" />
+    <StreamGeometry x:Key="TerminalIcon">M3,5 L10,12 L3,19 M13,19 H21</StreamGeometry>
+    <StreamGeometry x:Key="PlusIcon">M12,4 V20 M4,12 H20</StreamGeometry>
+    <StreamGeometry x:Key="SearchIcon">M17,10 C17,13.86 13.86,17 10,17 C6.14,17 3,13.86 3,10 C3,6.14 6.14,3 10,3 C13.86,3 17,6.14 17,10 M15,15 L21,21</StreamGeometry>
+    <StreamGeometry x:Key="FolderIcon">M3,7 V20 H21 V7 H12 L10,4 H3 Z</StreamGeometry>
+    <StreamGeometry x:Key="FileIcon">M6,3 H15 L20,8 V21 H6 Z M15,3 V8 H20</StreamGeometry>
+    <StreamGeometry x:Key="BranchIcon">M6,3 V19 M6,13 C6,8 18,13 18,6 M3,3 H9 M3,19 H9 M15,3 H21 V6 H15 Z</StreamGeometry>
+    <StreamGeometry x:Key="RefreshIcon">M20,7 V3 M20,7 H16 M20,7 C18,3 11,2 7,5 C3,8 3,15 7,18 C11,21 18,20 20,16</StreamGeometry>
+    <StreamGeometry x:Key="PanelIcon">M3,4 H21 V20 H3 Z M15,4 V20</StreamGeometry>
+    <StreamGeometry x:Key="TrashIcon">M4,7 H20 M9,7 V4 H15 V7 M6,7 L7,21 H17 L18,7 M10,10 V18 M14,10 V18</StreamGeometry>
+    <StreamGeometry x:Key="ArrowUpIcon">M12,20 V4 M5,11 L12,4 L19,11</StreamGeometry>
+    <StreamGeometry x:Key="ChevronIcon">M9,5 L16,12 L9,19</StreamGeometry>
+    <StreamGeometry x:Key="PlayIcon">M7,4 L20,12 L7,20 Z</StreamGeometry>
+    <StreamGeometry x:Key="MachineIcon">M3,4 H21 V17 H3 Z M8,21 H16 M12,17 V21</StreamGeometry>
+
+    <ControlTheme x:Key="WorkbenchButton" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="5" />
+      <Setter Property="Padding" Value="9,5" />
+      <Setter Property="MinHeight" Value="28" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}">
+            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover /template/ Border#ButtonBorder"><Setter Property="Background" Value="{StaticResource HoverBrush}" /></Style>
+      <Style Selector="^:pressed /template/ Border#ButtonBorder"><Setter Property="Background" Value="{StaticResource SelectionBrush}" /></Style>
+      <Style Selector="^:focus-visible /template/ Border#ButtonBorder"><Setter Property="BorderBrush" Value="{StaticResource FocusBrush}" /></Style>
+      <Style Selector="^:disabled"><Setter Property="Opacity" Value="0.4" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="WorkbenchListItem" TargetType="ListBoxItem">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Margin" Value="0,2" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="RowBorder" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="1"
+                  CornerRadius="6" Padding="{TemplateBinding Padding}">
+            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover /template/ Border#RowBorder"><Setter Property="Background" Value="{StaticResource HoverBrush}" /></Style>
+      <Style Selector="^:selected /template/ Border#RowBorder"><Setter Property="Background" Value="{StaticResource SelectionBrush}" /></Style>
+      <Style Selector="^:focus-visible /template/ Border#RowBorder"><Setter Property="BorderBrush" Value="{StaticResource FocusBrush}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="WorkbenchTab" TargetType="TabItem">
+      <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="MinHeight" Value="38" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="TabBorder" Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,0,1" Padding="{TemplateBinding Padding}">
+            <ContentPresenter Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover"><Setter Property="Foreground" Value="{StaticResource TextBrush}" /></Style>
+      <Style Selector="^:selected"><Setter Property="Foreground" Value="{StaticResource TextBrush}" /></Style>
+      <Style Selector="^:selected /template/ Border#TabBorder"><Setter Property="BorderBrush" Value="{StaticResource TextBrush}" /></Style>
+      <Style Selector="^:focus-visible /template/ Border#TabBorder"><Setter Property="Background" Value="{StaticResource HoverBrush}" /></Style>
+    </ControlTheme>
+  </Styles.Resources>
+
+  <Style Selector="Window"><Setter Property="FontFamily" Value="Inter" /><Setter Property="FontSize" Value="12" /><Setter Property="Foreground" Value="{StaticResource TextBrush}" /><Setter Property="Background" Value="{StaticResource RailBrush}" /></Style>
+  <Style Selector="Button"><Setter Property="Theme" Value="{StaticResource WorkbenchButton}" /><Setter Property="FontSize" Value="12" /></Style>
+  <Style Selector="Button.icon"><Setter Property="Width" Value="30" /><Setter Property="Height" Value="30" /><Setter Property="Padding" Value="7" /></Style>
+  <Style Selector="Button.primary"><Setter Property="Background" Value="{StaticResource SelectionBrush}" /><Setter Property="BorderBrush" Value="{StaticResource FocusBrush}" /></Style>
+  <Style Selector="TextBlock.muted"><Setter Property="Foreground" Value="{StaticResource MutedBrush}" /></Style>
+  <Style Selector="TextBlock.faint"><Setter Property="Foreground" Value="{StaticResource FaintBrush}" /></Style>
+  <Style Selector="TextBlock.section"><Setter Property="Foreground" Value="{StaticResource MutedBrush}" /><Setter Property="FontSize" Value="10" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+  <Style Selector="TextBlock.mono"><Setter Property="FontFamily" Value="DejaVu Sans Mono" /><Setter Property="FontSize" Value="11" /></Style>
+  <Style Selector="Path.icon"><Setter Property="Width" Value="15" /><Setter Property="Height" Value="15" /><Setter Property="Stretch" Value="Uniform" /><Setter Property="Stroke" Value="{StaticResource MutedBrush}" /><Setter Property="StrokeThickness" Value="1.5" /></Style>
+  <Style Selector="ListBox"><Setter Property="Background" Value="Transparent" /><Setter Property="BorderThickness" Value="0" /><Setter Property="Padding" Value="0" /></Style>
+  <Style Selector="ListBoxItem"><Setter Property="Theme" Value="{StaticResource WorkbenchListItem}" /></Style>
+  <Style Selector="ListBox.files ListBoxItem"><Setter Property="Padding" Value="7,5" /><Setter Property="Margin" Value="0" /></Style>
+  <Style Selector="TabItem"><Setter Property="Theme" Value="{StaticResource WorkbenchTab}" /><Setter Property="FontSize" Value="12" /></Style>
+  <Style Selector="TabControl"><Setter Property="Padding" Value="0" /><Setter Property="BorderThickness" Value="0" /><Setter Property="Background" Value="{StaticResource RailBrush}" /></Style>
+  <Style Selector="TextBox"><Setter Property="Background" Value="{StaticResource SurfaceBrush}" /><Setter Property="Foreground" Value="{StaticResource TextBrush}" /><Setter Property="BorderBrush" Value="{StaticResource LineBrush}" /><Setter Property="CornerRadius" Value="6" /><Setter Property="FontSize" Value="12" /><Setter Property="Padding" Value="10,7" /></Style>
+  <Style Selector="TextBox.code"><Setter Property="FontFamily" Value="DejaVu Sans Mono" /><Setter Property="FontSize" Value="11" /><Setter Property="Background" Value="{StaticResource CanvasBrush}" /><Setter Property="BorderThickness" Value="0" /><Setter Property="CornerRadius" Value="0" /><Setter Property="Padding" Value="12" /></Style>
+  <Style Selector="TextBox.search"><Setter Property="BorderThickness" Value="0" /><Setter Property="MinHeight" Value="32" /><Setter Property="Padding" Value="32,7,10,7" /></Style>
+  <Style Selector="GridSplitter"><Setter Property="Background" Value="{StaticResource LineBrush}" /></Style>
+</Styles>

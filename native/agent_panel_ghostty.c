@@ -61,8 +61,8 @@ ap_terminal *ap_create(const char *directory, const char *command, int cols, int
     }
     ghostty_terminal_set(t->terminal, GHOSTTY_TERMINAL_OPT_USERDATA, t);
     ghostty_terminal_set(t->terminal, GHOSTTY_TERMINAL_OPT_WRITE_PTY, reply);
-    GhosttyColorRgb fg = { .r = 216, .g = 222, .b = 233 };
-    GhosttyColorRgb bg = { .r = 20, .g = 25, .b = 35 };
+    GhosttyColorRgb fg = { .r = 228, .g = 228, .b = 231 };
+    GhosttyColorRgb bg = { .r = 24, .g = 24, .b = 27 };
     ghostty_terminal_set(t->terminal, GHOSTTY_TERMINAL_OPT_COLOR_FOREGROUND, &fg);
     ghostty_terminal_set(t->terminal, GHOSTTY_TERMINAL_OPT_COLOR_BACKGROUND, &bg);
     /* Prepare environment before fork: the child only performs async-signal-safe calls. */

@@ -53,11 +53,11 @@ try
     {
         using var terminal = new GhosttySession(repository, "exec /bin/bash --noprofile --norc -i");
         terminal.Write("printf '\\033[31mGHOSTTY_OK\\033[0m\\n'\r");
-        await WaitFor(() => { terminal.Pump(); return terminal.Snapshot().Cells.Any(cell => cell.GetText() == "G" && cell.Foreground != 0xffd8dee9); });
+        await WaitFor(() => { terminal.Pump(); return terminal.Snapshot().Cells.Any(cell => cell.GetText() == "G" && cell.Foreground != 0xffe4e4e7); });
         terminal.Resize(100, 30);
         terminal.Write("stty size\r");
         await WaitFor(() => { terminal.Pump(); return Screen(terminal).Contains("30 100"); });
-        Check(terminal.Snapshot().Cells.Any(cell => cell.GetText() == "G" && cell.Foreground != 0xffd8dee9), "Ghostty ANSI color state");
+        Check(terminal.Snapshot().Cells.Any(cell => cell.GetText() == "G" && cell.Foreground != 0xffe4e4e7), "Ghostty ANSI color state");
         terminal.Write("printf '\\033[?1049hALT_SCREEN'; sleep 0.3; printf '\\033[?1049l'; printf 'PRIMARY_BACK\\n'\r");
         await WaitFor(() => { terminal.Pump(); var screen = Screen(terminal); return screen.Contains("ALT_SCREEN") && !screen.Contains("GHOSTTY_OK"); });
         await WaitFor(() => { terminal.Pump(); return Screen(terminal).Contains("GHOSTTY_OK") && Screen(terminal).Contains("PRIMARY_BACK"); });
@@ -121,7 +121,7 @@ static void RunUiSmoke(string directory, bool native)
         var active = terminal!.Session!;
         // Headless tests have no running dispatcher loop; advance PTY I/O explicitly.
         active.Pump();
-        Check(Screen(active).Contains("UI_TERMINAL_OK") && active.Snapshot().Cells.Any(cell => cell.GetText() == "U" && cell.Foreground != 0xffd8dee9), "UI keyboard reaches real Ghostty PTY");
+        Check(Screen(active).Contains("UI_TERMINAL_OK") && active.Snapshot().Cells.Any(cell => cell.GetText() == "U" && cell.Foreground != 0xffe4e4e7), "UI keyboard reaches real Ghostty PTY");
         list.SelectedIndex = 1;
         Dispatcher.UIThread.RunJobs();
         Check(terminal.Session is null, "second session has an independent terminal");
@@ -129,8 +129,30 @@ static void RunUiSmoke(string directory, bool native)
         Dispatcher.UIThread.RunJobs();
         Check(ReferenceEquals(terminal.Session, active), "switching sessions preserves running PTY");
     }
+    var search = window.FindControl<TextBox>("SessionSearch")!;
+    search.Text = "Shell"; Dispatcher.UIThread.RunJobs();
+    Check(list.ItemCount == 1 && ((SessionRow)list.SelectedItem!).Name == "Shell", "session search filters names");
+    search.Text = "missing session"; Dispatcher.UIThread.RunJobs();
+    Check(list.ItemCount == 0 && terminal!.Session is null && window.FindControl<Border>("TerminalEmpty")!.IsVisible, "empty search clears terminal and shows empty state");
+    search.Text = ""; Dispatcher.UIThread.RunJobs();
+    Check(list.ItemCount == 2, "clearing search restores sessions");
+    var inspector = window.FindControl<Grid>("Inspector")!;
+    window.FindControl<Button>("ToggleInspectorButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(!inspector.IsVisible, "inspector toggle collapses panel");
+    terminal!.Focus();
+    window.KeyPressQwerty(PhysicalKey.J, RawInputModifiers.Control | RawInputModifiers.Shift);
+    Check(inspector.IsVisible, "inspector shortcut works while terminal is focused");
+    window.CaptureRenderedFrame()!.Save("/tmp/agent-panel-empty.png", Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
+    list.SelectedIndex = 0;
+    for (var i = 0; i < 30; i++) { Dispatcher.UIThread.RunJobs(); Thread.Sleep(20); }
     var frame = window.CaptureRenderedFrame();
     Check(frame is not null, "Avalonia headless render");
     frame!.Save("/tmp/agent-panel-preview.png", Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
+    window.FindControl<TabControl>("InspectorTabs")!.SelectedIndex = 1;
+    for (var i = 0; i < 30; i++) { Dispatcher.UIThread.RunJobs(); Thread.Sleep(20); }
+    window.CaptureRenderedFrame()!.Save("/tmp/agent-panel-changes.png", Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
+    window.FindControl<TabControl>("InspectorTabs")!.SelectedIndex = 2;
+    Dispatcher.UIThread.RunJobs();
+    window.CaptureRenderedFrame()!.Save("/tmp/agent-panel-graph.png", Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
     window.Close();
 }
